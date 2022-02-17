@@ -214,14 +214,14 @@ Mat YOLO::detect(Mat& frame)
 	auto allocator_info = MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 	Value input_tensor_ = Value::CreateTensor<float>(allocator_info, input_image_.data(), input_image_.size(), input_shape_.data(), input_shape_.size());
 
-	// ¿ªÊ¼ÍÆÀí
-	vector<Value> ort_outputs = ort_session->Run(RunOptions{ nullptr }, &input_names[0], &input_tensor_, 1, output_names.data(), output_names.size());   // ¿ªÊ¼ÍÆÀí
+	// å¼€å§‹æ¨ç†
+	vector<Value> ort_outputs = ort_session->Run(RunOptions{ nullptr }, &input_names[0], &input_tensor_, 1, output_names.data(), output_names.size());   // å¼€å§‹æ¨ç†
 	/////generate proposals
 	vector<BoxInfo> generate_boxes;
 	float ratioh = (float)frame.rows / newh, ratiow = (float)frame.cols / neww;
 	int n = 0, q = 0, i = 0, j = 0, row_ind = 0, k = 0; ///xmin,ymin,xamx,ymax,box_score, class_score
 	const float* pdata = ort_outputs[0].GetTensorMutableData<float>();
-	for (n = 0; n < 3; n++)   ///ÌØÕ÷Í¼³ß¶È
+	for (n = 0; n < 3; n++)   ///ç‰¹å¾å›¾å°ºåº¦
 	{
 		int num_grid_x = (int)(this->inpWidth / this->stride[n]);
 		int num_grid_y = (int)(this->inpHeight / this->stride[n]);
@@ -327,7 +327,7 @@ int main()
 	Mat srcimg = imread(imgpath);
 	Mat outimg = yolo_model.detect(srcimg);
 
-	static const string kWinName = "Deep learning object detection in OpenCV";
+	static const string kWinName = "Deep learning object detection in ONNXRuntime";
 	namedWindow(kWinName, WINDOW_NORMAL);
 	imshow(kWinName, outimg);
 	waitKey(0);
